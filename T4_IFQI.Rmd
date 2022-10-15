@@ -1,0 +1,57 @@
+---
+title: '**Tarea 4**'
+author: ' \textcolor{blue}{Iván F. Quiroz Ibáñez}'
+date: "`r format(Sys.time(), '%d % de %B % de %Y')`"
+language: es-MX
+output:
+  pdf_document:
+    includes:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    fig_caption: yes
+    df_print: paged
+  word_document:
+subtitle: COA-501 Herramientas de cómputo para investigadores
+---
+
+### **Entrada de datos**
+```{r}
+library(readxl)
+t4.df.datos <- read_xlsx("T4_df_auto.xlsx")
+head(t4.df.datos)
+
+names (t4.df.datos) = c("ID", "millasporgalon", "cilindros", "desplazamiento", 
+              "caballosdefuerza", "peso", "aceleracion","anio","origen","nombre")
+names (t4.df.datos)
+```
+
+### **Modelo de regresión**
+```{r}
+ml <- lm(desplazamiento~peso,t4.df.datos)
+summary(ml)
+
+#grafica predictor vs predicho
+plot(t4.df.datos$peso,t4.df.datos$desplazamiento)
+abline(ml,col="red")
+
+#grafica predictor vs ajustados
+plot(ml$fitted.values,t4.df.datos$peso)
+
+#grafica residuales vs predichos
+
+plot(ml$fitted.values,ml$residuals)
+
+plot(ml,3)
+
+#qqplot
+plot(ml,2)
+
+#Kolmogorov-Smirnov test
+ks.test(ml$residuals,"pnorm")
+```
+
+### **Interpretación de gráficas y resultados**
+
+De acuerdo con los resultados, se observa que la relación de desplazamiento y peso es fuertemente lineal; realizando el ajuste del modelo lineal, se visualiza que existe heterocedasticidad en el modelo y con el qqplot y la prueba de Kolmogorov-Smirnov, se concluye que los residuales no tienen una distribución normal. Se propone usar GLM o trasnformar a las variables.
+
